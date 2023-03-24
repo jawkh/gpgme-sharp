@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net60;netcoreapp3.1</TargetFrameworks>
     <AssemblyVersion>2.0.3</AssemblyVersion>
     <FileVersion>2.0.3</FileVersion>
     <AssemblyName>gpgme-sharp</AssemblyName>
@@ -14,6 +14,7 @@
     <PackageReleaseNotes>Update to support .NET Standard 2.0</PackageReleaseNotes>
     <PackageLicenseUrl>https://d.sb/gpgme#license</PackageLicenseUrl>
     <PackageProjectUrl>https://d.sb/gpgme</PackageProjectUrl>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,14 +46,6 @@
       <InputAssemblies Include="$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\GPGME.Native.Unix.dll" />
       <InputAssemblies Include="$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\GPGME.Native.Win32.dll" />
     </ItemGroup>
-    <ILRepack
-      Condition="'$(TargetFramework)' != ''"
-      OutputType="$(OutputType)"
-      MainAssembly="$(AssemblyName).dll"
-      OutputAssembly="$(AssemblyName).dll"
-      InputAssemblies="@(InputAssemblies)"
-      WorkingDirectory="$(WorkingDirectory)"
-      Internalize="false"
-    />
+    <ILRepack Condition="'$(TargetFramework)' != ''" OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" WorkingDirectory="$(WorkingDirectory)" Internalize="false" />
   </Target>
 </Project>

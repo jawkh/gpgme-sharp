@@ -12,7 +12,7 @@ namespace PgpCombinedCrypto
 
     /// <summary>
     /// Credits: https://weblogs.asp.net/jongalloway/encrypting-passwords-in-a-net-app-config-file 
-    /// This Class uses Windows Data Protection API (DPAPI) to decrypt the OpenPGP private key's Secret Passphrase. https://learn.microsoft.com/en-us/previous-versions/ms995355(v=msdn.10)?redirectedfrom=MSDN 
+    /// This Helper Class uses Windows Data Protection API (DPAPI) to decrypt the OpenPGP private key's Secret Passphrase. https://learn.microsoft.com/en-us/previous-versions/ms995355(v=msdn.10)?redirectedfrom=MSDN 
     /// </summary>
     internal class DecryptSecretsFromAppConfigWithWindowsDataProtectionAPI : IGetSecrets
     {

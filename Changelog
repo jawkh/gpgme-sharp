@@ -1,3 +1,9 @@
+2023-03-27 Jonathan AW <jonathan_aw@moh.gov.sg> - NA
+    *   Forked the original github project and adapted the sample codes in the examples to provide a developer's guide for implementing gpg for MOH and MOH's partners. Omited unnecessary VS.Net projects for brevity.
+    *   Amended all the sample code projects to targeted the .NET framework 6.0
+    *   Enhanced the PgpCombinedCrypto code to provide 2 different solutions for protecting the secret passphrase for OpenPGP private keys (Soln 1: AWS Secrets Manager, Soln 2: Windows Data Protection API).
+    *   Added the EncryptStringWithWindowsDataProtectionAPI project to provide encryption of the secret passphrase using Windows Data Protection API
+
 2019-03-24  Daniel Lo Nigro <d@d.sb> - 2.0.3
     * Added export modes, to allow exporting secret keys
 	* Added missing fields to subkey: Curve, CardNumber, and Keygrip

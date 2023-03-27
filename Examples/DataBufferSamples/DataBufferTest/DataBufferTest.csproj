@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\gpgme-sharp\gpgme-sharp.csproj" />
+    <PackageReference Include="gpgme-sharp" Version="2.0.3" />
   </ItemGroup>
 
 </Project>

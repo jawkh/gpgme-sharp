@@ -135,7 +135,7 @@ namespace PgpCombinedCrypto
             Console.Write("Decrypt and verify data.. ");
 
             cipher = new GpgmeFileData("cipher.asc"); // Filepath of the Encrypted Payload
-            //plain = new GpgmeMemoryData(); // Load Decrypted Payload into Memory Stream if it is not desirable to save it to filesystem. (eg. for saving into Object Store or Database System)
+            //plain = new GpgmeMemoryData(); // Load Decrypted Payload into Memory Stream if it is not desirable to save it to filesystem. (eg. for saving into Object Store or Database System). Refer to the sample codes in the DataSampleTest project.
             plain = new GpgmeFileData("decryptedPlain.txt"); // Filepath of the decrypted payload
 
             CombinedResult comrst = ctx.DecryptAndVerify(

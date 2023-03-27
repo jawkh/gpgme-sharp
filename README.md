@@ -1,3 +1,11 @@
+Background
+==========
+This repository was forked from https://github.com/gpgme-sharp/gpgme-sharp
+
+Adapted the original [PgpCombinedCrypto](Examples/PgpCombinedCrypto) project to provide a developer's guide for implementing gpg for MOH and MOH's partners. 
+
+Omited unnecessary VS.Net projects for brevity reasons.
+
 gpgme-sharp
 ===========
 
@@ -24,3 +32,10 @@ dotnet add package gpgme-sharp
 
 See the [Examples](Examples/) directory in this repo for usage examples.
 
+Catalog of VS.Net Projects in this Repo.
+======================================================
+1. [PgpCombinedCrypto](Examples/PgpCombinedCrypto) provides the sample code as part of the developer's guide for MOH and MOH's partners to implement GnuPG. Provides 2 ready-to-use solutions to provide confidentiality to the secret passphrases of the OpenPGP private keys. [Sol 1: Uses AWS Secrets manager. Sol 2: Uses Windows Data Protection API.]
+
+2. [EncryptStringWithWindowsDataProtectionAPI](EncryptStringWithDPAPI) provides a console program for encrypting the secret passphrases of OpenPGP private keys by using Windows Data Protection API. This is for one of the solution to provide confidentiality to the secret passphrases.
+
+3. [DataBufferTest](\Examples/DataBufferSamples) provides sample code on howto use data buffers to handle the encrypted/decrypted data payload without saving them  onto the OS filesystems. This is suitable for reading/writing the data from/to databases or object stores.  

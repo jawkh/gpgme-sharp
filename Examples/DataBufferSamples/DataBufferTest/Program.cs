@@ -35,7 +35,10 @@ namespace DataBufferTest
 			Console.WriteLine("Seek to begin: " + streamdata.Seek(0, SeekOrigin.Begin));
 			byte[] tmp2 = new byte[bytedata.Length];
 			Console.WriteLine("Bytes read: " + streamdata.Read(tmp2));
-		}
+
+            Console.WriteLine("\n\nPress Enter to Exit. ");
+            Console.ReadLine();
+        }
 	}
 }
 

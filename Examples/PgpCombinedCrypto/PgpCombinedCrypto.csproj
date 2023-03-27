@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="~%24SETUP.docx" />
+    <None Remove="~WRL2497.tmp" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.SecretsManager.Caching" Version="1.0.5" />
     <PackageReference Include="gpgme-sharp" Version="2.0.3" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />

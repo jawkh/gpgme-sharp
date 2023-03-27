@@ -12,5 +12,7 @@ while (string.IsNullOrEmpty(secretsInClear))
     secretsInClear = Console.ReadLine();
 }
 
-Console.WriteLine("-----BEGIN SECRET-----\n{0}", EncryptSecretsUsingWindowsDataProtectionAPI.EncryptString(EncryptSecretsUsingWindowsDataProtectionAPI.ToSecureString(secretsInClear)));
+Console.WriteLine("\n-----BEGIN SECRET-----\n{0}", EncryptSecretsUsingWindowsDataProtectionAPI.EncryptString(EncryptSecretsUsingWindowsDataProtectionAPI.ToSecureString(secretsInClear)));
 Console.WriteLine("-----END SECRET-----");
+Console.WriteLine("\n\nPress Enter to Exit. ");
+Console.ReadLine();

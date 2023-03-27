@@ -13,11 +13,11 @@ namespace PgpCombinedCrypto
     {
         static void Main()
         {
-            // Please read the preparation section of MOH's OpenPGP Development Guide beforehand.
+            // Please read the README.md beforehand.
 
-            // [Uncomment the following code if necessary for troubleshooting accessing your chosen Secrets Manager]
+            // [Uncomment the following line of code if necessary for troubleshooting your chosen Secrets Manager]
             // START -------------------------------------------------------------------------
-            TestSecretsManager();
+            //TestSecretsManager();
             // END ---------------------------------------------------------------------------
 
 
@@ -26,12 +26,10 @@ namespace PgpCombinedCrypto
             if (ctx.Protocol != Protocol.OpenPGP)
                 ctx.SetEngineInfo(Protocol.OpenPGP, null, null);
 
-            Console.WriteLine("Search Bob's and Alice's PGP keys in the default keyring..");
-
-            // Please follow the implementation guide to Create and/or Import Bob's and Alice's OpenPGP keys onto the machine beforehand
-            // bob is the recipient in this example
             // alice is the sender in this example
-
+            // bob is the recipient in this example
+            Console.WriteLine("Search Bob's and Alice's PGP keys in the default keyring..");
+            
             var appSettings = ConfigurationManager.AppSettings;
             string aliceEmail = Convert.ToString(appSettings["AliceEmailAddress"]);
             string bobEmail = Convert.ToString(appSettings["BobEmailAddress"]);
@@ -92,13 +90,12 @@ namespace PgpCombinedCrypto
 
             Console.Write("Encrypt data for Bob and sign it with Alice's PGP key.. ");
 
-            GpgmeData plain = new GpgmeFileData("plain.txt");
+            GpgmeData plain = new GpgmeFileData("plain.txt"); // There is option to create a memory based buffer for GPGME instead. That is useful if the data is loaded from object-stores or databases instead of the OS filesystem. Refer to the sample codes in the DataSampleTest project.
             GpgmeData cipher = new GpgmeFileData("cipher.asc");
 
             // Create ASCII armored output. The default is to create the binary OpenPGP format.
             ctx.Armor = true;
-            ctx.Protocol = Protocol.OpenPGP;
-
+            
             /* Set the password callback 
              */
             ctx.SetPassphraseFunction(SenderPassphraseCallback);
@@ -135,8 +132,7 @@ namespace PgpCombinedCrypto
             Console.Write("Decrypt and verify data.. ");
 
             cipher = new GpgmeFileData("cipher.asc"); // Filepath of the Encrypted Payload
-            //plain = new GpgmeMemoryData(); // Load Decrypted Payload into Memory Stream if it is not desirable to save it to filesystem. (eg. for saving into Object Store or Database System). Refer to the sample codes in the DataSampleTest project.
-            plain = new GpgmeFileData("decryptedPlain.txt"); // Filepath of the decrypted payload
+            plain = new GpgmeFileData("decryptedPlain.txt"); // Filepath of the decrypted payload. There is option to create a memory based buffer for GPGME instead. That is useful if the data is loaded from object-stores or databases instead of the OS filesystem. Refer to the sample codes in the DataSampleTest project.
 
             CombinedResult comrst = ctx.DecryptAndVerify(
                 cipher, // source buffer
@@ -178,14 +174,24 @@ namespace PgpCombinedCrypto
                         sig.Validity);
                 }
             }
+            Console.WriteLine("\n\nPress Enter to Exit. ");
+            Console.ReadLine();
         }
 
+        /// <summary>
+        /// Function to test the configured Secrets Manager
+        /// </summary>
         private static void TestSecretsManager()
         {
+            Console.WriteLine("Testing Secrets Manager...");
             string senderSecretPassphrase = GetSenderSecretPassphrase();
             string recipientSecretPassphrase = GetRecipientSecretPassphrase();
         }
 
+        /// <summary>
+        /// Helper function to retrieve the Sender's Secret Passphrase from the configured Secrets Manager
+        /// </summary>
+        /// <returns>The Secret Passphrase</returns>
         private static string GetSenderSecretPassphrase()
         {
             var appSettings = ConfigurationManager.AppSettings;
@@ -195,12 +201,11 @@ namespace PgpCombinedCrypto
             if (IsUsingAWSSecretsManager)
             {
                 // Systems that are hosted in AWS are strongly encouraged to use AWS Secrets Manager to secured their OpenPGP Secret Passphrase
-                // Test retrieving Secrets from AWS SecretsManager
                 IGetSecrets sm = new GetSecretsFromAWSSecretsManager();
-                string senderSecretPassphraseID = "prod/AliceSecretPassPhrase";
+                string senderSecretPassphraseID = "prod/AliceSecretPassPhrase"; //Set the Secret Name configured in AWS Secrets Manager
                 var retrievedSecrets = JsonSerializer.Deserialize<Dictionary<string, string>>(sm.GetSecretString(senderSecretPassphraseID));
                 senderSecretPassphrase = retrievedSecrets["SecretPassPhrase"];
-
+                Console.WriteLine("Fetched Secret Passphrase from AWS Secrets Manager...");
             }
             else
             {
@@ -210,11 +215,16 @@ namespace PgpCombinedCrypto
                 IGetSecrets sm = new DecryptSecretsFromAppConfigWithWindowsDataProtectionAPI();
                 string senderSecretPassphraseID = "AliceEncryptedSecretPassPhrase";
                 senderSecretPassphrase = sm.GetSecretString(senderSecretPassphraseID);
+                Console.WriteLine("Decrypted Secret Passphrase using Windows Data Protection API...");
             }
 
             return senderSecretPassphrase;
         }
 
+        /// <summary>
+        /// Helper function to retrieve the Recipient's Secret Passphrase from the configured Secrets Manager
+        /// </summary>
+        /// <returns></returns>
         private static string GetRecipientSecretPassphrase()
         {
             var appSettings = ConfigurationManager.AppSettings;
@@ -229,7 +239,7 @@ namespace PgpCombinedCrypto
                 string recipientSecretPassphraseID = "prod/BobSecretPassPhrase";
                 var retrievedSecrets = JsonSerializer.Deserialize<Dictionary<string, string>>(sm.GetSecretString(recipientSecretPassphraseID));
                 recipientSecretPassphrase = retrievedSecrets["SecretPassPhrase"];
-
+                Console.WriteLine("Fetched Secret Passphrase from AWS Secrets Manager...");
             }
             else
             {
@@ -239,11 +249,12 @@ namespace PgpCombinedCrypto
                 IGetSecrets sm = new DecryptSecretsFromAppConfigWithWindowsDataProtectionAPI();
                 string recipientSecretPassphraseID = "BobEncryptedSecretPassPhrase";
                 recipientSecretPassphrase = sm.GetSecretString(recipientSecretPassphraseID);
+                Console.WriteLine("Decrypted Secret Passphrase using Windows Data Protection API...");
             }
             return recipientSecretPassphrase;
         }
         /// <summary>
-        /// Passphrase callback method. Invoked if a action requires the user's password.
+        /// Sender's Passphrase callback method. Invoked if a action requires the user's password.
         /// </summary>
         /// <param name="ctx">Context that has invoked the callback.</param>
         /// <param name="info">Information about the key.</param>
@@ -254,17 +265,17 @@ namespace PgpCombinedCrypto
            PassphraseInfo info,
            ref char[] passwd)
         {
-            Console.Write("Supplying Sender's Secret Passphrase programmatically...");
+            Console.WriteLine("Supplying Sender's Secret Passphrase programmatically...");
 
             string senderSecretPassphrase = GetSenderSecretPassphrase();
 
             passwd = senderSecretPassphrase.ToCharArray();
-            Console.Write("OK!");
+            Console.WriteLine("OK!");
             return PassphraseResult.Success;
         }
 
         /// <summary>
-        /// Passphrase callback method. Invoked if a action requires the user's password.
+        /// Recipient's Passphrase callback method. Invoked if a action requires the user's password.
         /// </summary>
         /// <param name="ctx">Context that has invoked the callback.</param>
         /// <param name="info">Information about the key.</param>
@@ -275,11 +286,11 @@ namespace PgpCombinedCrypto
                PassphraseInfo info,
                ref char[] passwd)
         {
-            Console.Write("Supplying Recipient's Secret Passphrase programmatically...");
+            Console.WriteLine("Supplying Recipient's Secret Passphrase programmatically...");
 
             string recipientSecretPassphrase = GetRecipientSecretPassphrase();
             passwd = recipientSecretPassphrase.ToCharArray();
-            Console.Write("OK!");
+            Console.WriteLine("OK!");
             return PassphraseResult.Success;
         }
     }

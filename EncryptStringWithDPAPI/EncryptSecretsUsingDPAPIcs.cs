@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Security;
 using System.Text;
@@ -8,10 +9,14 @@ using System.Threading.Tasks;
 namespace EncryptStringWithDPAPI
 {
 
-    // Credits: https://weblogs.asp.net/jongalloway/encrypting-passwords-in-a-net-app-config-file 
+    /// <summary>
+    /// Credits: https://weblogs.asp.net/jongalloway/encrypting-passwords-in-a-net-app-config-file 
+    /// This helper class uses Windows Data Protection API (DPAPI) to encrypt the OpenPGP private key's Secret Passphrase. https://learn.microsoft.com/en-us/previous-versions/ms995355(v=msdn.10)?redirectedfrom=MSDN 
+    /// </summary>
     internal class EncryptSecretsUsingWindowsDataProtectionAPI
     {
-        static byte[] entropy = System.Text.Encoding.Unicode.GetBytes("Salt Is Not A Password");
+        static string sEntropy = Convert.ToString(ConfigurationManager.AppSettings["entropy"]);
+        static byte[] entropy = System.Text.Encoding.Unicode.GetBytes(sEntropy);
 
         internal static string EncryptString(System.Security.SecureString input)
         {

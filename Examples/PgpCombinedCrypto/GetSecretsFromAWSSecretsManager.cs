@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Amazon.SecretsManager.Extensions.Caching;
-//using Amazon.SecretsManager.Extensions.Caching.SecretsManagerCache;
+
 
 namespace PgpCombinedCrypto
 {
+    /// <summary>
+    /// Helper Class for retrieving Secrets from AWS Secrets Manager
+    /// </summary>
     internal class GetSecretsFromAWSSecretsManager : IGetSecrets
     {
         private static SecretsManagerCache cache = new SecretsManagerCache();

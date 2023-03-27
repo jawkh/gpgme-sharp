@@ -37,8 +37,8 @@ namespace PgpCombinedCrypto
             string bobEmail = Convert.ToString(appSettings["BobEmailAddress"]);
 
             String[] searchpattern = new String[2]; ;
-            searchpattern[0]=aliceEmail;
-            searchpattern[1]=bobEmail;
+            searchpattern[0] = aliceEmail;
+            searchpattern[1] = bobEmail;
 
             IKeyStore keyring = ctx.KeyStore;
 
@@ -95,8 +95,9 @@ namespace PgpCombinedCrypto
             GpgmeData plain = new GpgmeFileData("plain.txt");
             GpgmeData cipher = new GpgmeFileData("cipher.asc");
 
-            // we want or PGP encrypted/signed data RADIX/BASE64 encoded.
+            // Create ASCII armored output. The default is to create the binary OpenPGP format.
             ctx.Armor = true;
+            ctx.Protocol = Protocol.OpenPGP;
 
             /* Set the password callback 
              */

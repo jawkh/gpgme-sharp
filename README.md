@@ -2,9 +2,9 @@ Background
 ==========
 This repository was forked from https://github.com/gpgme-sharp/gpgme-sharp
 
-Adapted the original [PgpCombinedCrypto](Examples/PgpCombinedCrypto) project to provide a developer's guide for implementing gpg for MOH and MOH's partners. 
+Adapted the original [PgpCombinedCrypto](Examples/PgpCombinedCrypto) project to provide a developer's guide for implementing OpenPGP (ie. using gpgme) for MOH and MOH's partners. Target Microsoft .NET Framework 6.0 (LTS) to support Applications that are developed for Windows, Linux and macOS.
 
-Omited unnecessary VS.Net projects for brevity reasons.
+Omited those VS.Net projects that are irrelevant in our context for brevity reasons.
 
 gpgme-sharp
 ===========
@@ -32,22 +32,25 @@ dotnet add package gpgme-sharp
 
 See the [Examples](Examples/) directory in this repo for usage examples.
 
-Catalog of VS.Net Projects in this Repo.
+Catalog of VS.Net Projects in this Implementation Guide Repo.
 ======================================================
 1. [PgpCombinedCrypto](Examples/PgpCombinedCrypto) provides the sample code as part of the developer's guide for MOH and MOH's partners to implement GnuPG. 
 
     a. Ready-to-Use Source Code for most applications
   
-    - Thanks to .NET 6.0 framework, the provided source code will be suitable to be adopted by any applications built for Windows, Linux and macOS Operating Systems. It can also be adopted to build AWS Lambda Functions and Azure Functions.
+    - Thanks to .NET 6.0 framework, the provided source code will be suitable to implement the recommended way to use GnuPG within an application built for Windows, Linux and macOS Operating Systems. It can also be adopted to build AWS Lambda Functions and Azure Functions.
 
-    b. Ready-to-Use Solutions for protecting the confidentiality of OpenPGP Private Keys’ Secret Passphrases
-The provided source code provides 2 ready-to-use solutions that provides protection for the confidentiality of the secret passphrase for the OpenPGP private keys.
+    b. Ready-to-Use Solutions for protecting the confidentiality of OpenPGP Private Keys’ Secret Passphrases.
+The provided source code provides 3 ready-to-use solutions that provides protection for the confidentiality of the secret passphrase for the OpenPGP private keys.
 
-    - Solution 1: Uses AWS Secrets Manager to store the OpenPGP SecretPassphrases. (Highly recommended for systems deployed in AWS)
+    - Solution 1: Uses AWS Secrets Manager [Recommended for AWS serverless and containerized based solutions. Also useful for Applications hosted on AWS EC2 Instances.]
 
-    - Solution 2: Uses Windows Data Protection API (DPAPI) to encrypt/decrypt the OpenPGP Secet Passphrases stored on the Application Server itself. But this only supports Systems implemented on Windows OS. However, you may refer to https://simplecodesoftware.com/articles/how-to-encrypt-data-on-macos-without-dpapi for a workaround that provides a similar solution for Systems on Linux and macOS.
+    - Solution 2: Uses Windows Data Protection API [Only works for Systems developed for Windows OS. Optimized for Windows-Based Applications!]
+    
+    - Solution 3: Uses ASP.NET Core Data Protection API [Works for Windows, Linux and macOS based Applications. Can be used on any .NET core applications, including non-ASP.NET ones. Recommended for all other types of Applications that cannot use Solutions 1 & 2.
 
+2. [ProtectSecretsWithWindowsDataProtectionAPI](ProtectSecretsWithWindowsDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using Windows Data Protection API. 
 
-2. [EncryptStringWithWindowsDataProtectionAPI](EncryptStringWithDPAPI) provides a console program for encrypting the secret passphrases of OpenPGP private keys by using Windows Data Protection API. This is for one of the solution to provide confidentiality to the secret passphrases.
+3. [ProtectSecretsWithASPNETCoreDataProtectionAPI](ProtectSecretsWithASPNETCoreDataProtectionAPI) provides a console program and a reusable library for encrypting secrets by using ASP.NET Core Data Protection API. 
 
-3. [DataBufferTest](\Examples/DataBufferSamples) provides sample code on howto use data buffers to handle the encrypted/decrypted data payload without saving them  onto the OS filesystems. This is suitable for reading/writing the data from/to databases or object stores.  
+4. [DataBufferTest](\Examples/DataBufferSamples) provides sample code on howto use data buffers to handle the encrypted/decrypted data payload without saving them  onto the OS filesystems. This is suitable for reading/writing the data from/to databases or object stores.  

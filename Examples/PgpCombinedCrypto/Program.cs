@@ -208,7 +208,7 @@ namespace PgpCombinedCrypto
             string passphraseProtectionMode = appSettings["PassphraseProtectionMode"].Trim().ToUpper();
             string senderSecretPassphrase;
 
-            Console.WriteLine("Fetching Alice's Secret Passphrase programmatically...\n\t");
+            Console.WriteLine(string.Format("Fetching Alice's Secret Passphrase programmatically [{0}]...\n\t", passphraseProtectionMode));
 
             switch (passphraseProtectionMode)
             {
@@ -216,7 +216,7 @@ namespace PgpCombinedCrypto
                     {
                         // Recommended for AWS serverless and containerized based solutions. Also useful for Applications hosted on AWS EC2 Instances.
                         IGetSecrets sm = new GetSecretsFromAWSSecretsManager();
-                        string senderSecretPassphraseID = "prod/AliceSecretPassPhrase"; //Set the Secret Name configured in AWS Secrets Manager
+                        string senderSecretPassphraseID = appSettings["AliceAWSSecretsName"]; //Set the Secret Name configured in AWS Secrets Manager
                         var retrievedSecrets = JsonSerializer.Deserialize<Dictionary<string, string>>(sm.GetSecretString(senderSecretPassphraseID));
                         senderSecretPassphrase = retrievedSecrets["SecretPassPhrase"];
                         Console.WriteLine("Fetched Secret Passphrase from AWS Secrets Manager...");
@@ -255,14 +255,14 @@ namespace PgpCombinedCrypto
             var appSettings = ConfigurationManager.AppSettings;
             string passphraseProtectionMode = appSettings["PassphraseProtectionMode"].Trim().ToUpper();
             string recipientSecretPassphrase;
-            Console.WriteLine("Fetching Bob's Secret Passphrase programmatically...");
+            Console.WriteLine(string.Format("Fetching Bob's Secret Passphrase programmatically [{0}]...\n\t", passphraseProtectionMode));
             switch (passphraseProtectionMode)
             {
                 case "AWS_SECRETSMANAGER":
                     {
                         // Recommended for AWS serverless and containerized based solutions. Also useful for Applications hosted on AWS EC2 Instances.
                         IGetSecrets sm = new GetSecretsFromAWSSecretsManager();
-                        string recipientSecretPassphraseID = "prod/BobSecretPassPhrase"; //Set the Secret Name configured in AWS Secrets Manager
+                        string recipientSecretPassphraseID = appSettings["BobAWSSecretsName"]; //Set the Secret Name configured in AWS Secrets Manager
                         var retrievedSecrets = JsonSerializer.Deserialize<Dictionary<string, string>>(sm.GetSecretString(recipientSecretPassphraseID));
                         recipientSecretPassphrase = retrievedSecrets["SecretPassPhrase"];
                         Console.WriteLine("Fetched Secret Passphrase from AWS Secrets Manager...");

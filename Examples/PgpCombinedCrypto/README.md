@@ -1,5 +1,10 @@
-Preparations (Follow the steps in Sequence)
-===========================================
+Intro
+=====
+This is the main project that provides the Developer's Guide for implementing OpenPGP (using gnupgme-sharp). 
+This project is written in C# and targets Microsoft .NET Framework 6.0 (LTS). Thanks to .NET 6.0, the provided source code can be adopted by any applications built for Windows, Linux and macOS Operating Systems. It can also be used to build AWS Lambda Functions and Azure Functions.
+
+Preparations (Follow the steps in Sequence to setup your development environment to run this code.)
+===================================================================================================
 
 1. Beforehand, please install the GnuPG requirements for the gpgme-sharp NuGet package on your development machine. 
 

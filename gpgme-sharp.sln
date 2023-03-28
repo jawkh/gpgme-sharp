@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBufferTest", "Examples\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgpCombinedCrypto", "Examples\PgpCombinedCrypto\PgpCombinedCrypto.csproj", "{B4DC5583-0F25-4451-A15E-171CE7583D3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncryptStringWithWindowsDataProtectionAPI", "EncryptStringWithDPAPI\EncryptStringWithWindowsDataProtectionAPI.csproj", "{BDA9B1DC-C030-4354-BD3D-27C35BED394D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtectSecretsWithWindowsDataProtectionAPI", "EncryptStringWithDPAPI\ProtectSecretsWithWindowsDataProtectionAPI.csproj", "{BDA9B1DC-C030-4354-BD3D-27C35BED394D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtectSecretsWithASPNETCoreDataProtectionAPI", "EncryptStringWithASPNETCoreDataProtectionAPI\ProtectSecretsWithASPNETCoreDataProtectionAPI.csproj", "{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,14 @@ Global
 		{BDA9B1DC-C030-4354-BD3D-27C35BED394D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDA9B1DC-C030-4354-BD3D-27C35BED394D}.Release|x86.ActiveCfg = Release|Any CPU
 		{BDA9B1DC-C030-4354-BD3D-27C35BED394D}.Release|x86.Build.0 = Release|Any CPU
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Debug|x86.Build.0 = Debug|Any CPU
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Release|x86.ActiveCfg = Release|Any CPU
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +64,7 @@ Global
 		{478F350D-4A32-4B68-BC3E-EC913CD097CF} = {040ADE11-7491-4C7C-9A4B-E4B645F08BD5}
 		{B4DC5583-0F25-4451-A15E-171CE7583D3E} = {F803B37B-3E35-43F8-A772-3A6D0ECB610A}
 		{BDA9B1DC-C030-4354-BD3D-27C35BED394D} = {F803B37B-3E35-43F8-A772-3A6D0ECB610A}
+		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24} = {F803B37B-3E35-43F8-A772-3A6D0ECB610A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {76405F3E-1C3A-4FBE-9275-780388EAA45B}

@@ -26,10 +26,13 @@ namespace PgpCombinedCrypto
             if (ctx.Protocol != Protocol.OpenPGP)
                 ctx.SetEngineInfo(Protocol.OpenPGP, null, null);
 
+            Console.WriteLine("####### WELCOME TO MOH's OpenPGP Developer's Guide Demo Application! #######\n");
+            Console.WriteLine("Meet Alice who is the sender and Bob who is the recipient.\n");
+
             // alice is the sender in this example
             // bob is the recipient in this example
-            Console.WriteLine("Search Bob's and Alice's PGP keys in the default keyring..");
-            
+            Console.WriteLine("Search Bob's and Alice's PGP keys in the default keyring on this machine...");
+
             var appSettings = ConfigurationManager.AppSettings;
             string aliceEmail = Convert.ToString(appSettings["AliceEmailAddress"]);
             string bobEmail = Convert.ToString(appSettings["BobEmailAddress"]);
@@ -71,31 +74,35 @@ namespace PgpCombinedCrypto
                 return;
             }
 
-            // Create a sample string
-            StringBuilder randomtext = new StringBuilder();
-            for (int i = 0; i < 80 * 6; i++)
-                randomtext.Append((char)(34 + i % 221));
-            string origintxt = new string('+', 508)
-                + " Die Gedanken sind frei "
-                + new string('+', 508)
-                + randomtext;
+            //// Create a sample string
+            //StringBuilder randomtext = new StringBuilder();
+            //for (int i = 0; i < 80 * 6; i++)
+            //    randomtext.Append((char)(34 + i % 221));
+            //string origintxt = new string('+', 508)
+            //    + " Die Gedanken sind frei "
+            //    + new string('+', 508)
+            //    + randomtext;
 
-            // we want our string UTF8 encoded.
-            UTF8Encoding utf8 = new UTF8Encoding();
+            //// we want our string UTF8 encoded.
+            //UTF8Encoding utf8 = new UTF8Encoding();
 
-            // Write sample string to plain.txt
-            File.WriteAllText("plain.txt", origintxt, utf8);
+            //// Write sample string to plain.txt
+            //File.WriteAllText("plain.txt", origintxt, utf8);
 
+            string senderDataFilePath = appSettings["SenderDataFilePath"];
+
+
+            Console.Write(string.Format("Alice has a Data File ({0}) that contains sensitive data that she needs to send to Bob.\n\n", senderDataFilePath));
             /////// ENCRYPT AND SIGN DATA ///////
 
-            Console.Write("Encrypt data for Bob and sign it with Alice's PGP key.. ");
+            Console.Write(">>>>> Encrypting data for Bob and signing it with Alice's PGP key...\n");
 
-            GpgmeData plain = new GpgmeFileData("plain.txt"); // There is option to create a memory based buffer for GPGME instead. That is useful if the data is loaded from object-stores or databases instead of the OS filesystem. Refer to the sample codes in the DataSampleTest project.
+            GpgmeData plain = new GpgmeFileData(senderDataFilePath); // There is option to create a memory based buffer for GPGME instead. That is useful if the data is loaded from object-stores or databases instead of the OS filesystem. Refer to the sample codes in the DataSampleTest project.
             GpgmeData cipher = new GpgmeFileData("cipher.asc");
 
             // Create ASCII armored output. The default is to create the binary OpenPGP format.
             ctx.Armor = true;
-            
+
             /* Set the password callback 
              */
             ctx.SetPassphraseFunction(SenderPassphraseCallback);
@@ -110,7 +117,7 @@ namespace PgpCombinedCrypto
                 plain,
                 cipher);
 
-            Console.WriteLine("done.\n\n");
+            Console.WriteLine("Successfully Encrypted and Signed the data payload (cipher.asc)!\n\n");
 
             // print out invalid signature keys
             if (encrst.InvalidRecipients != null)
@@ -129,17 +136,20 @@ namespace PgpCombinedCrypto
             ctx.SetPassphraseFunction(RecipientPassphraseCallback);
             ctx.PinentryMode = PinentryMode.Loopback; // Use the Loopback option to supply the secretPassphrase programmatically
 
-            Console.Write("Decrypt and verify data.. ");
+            Console.Write(">>>>> Decrypting and verifying data...\n");
+
+            string recipientDecryptedFilePath = string.Format("{0}-DECRYPTED{1}", senderDataFilePath, Path.GetExtension(senderDataFilePath));
 
             cipher = new GpgmeFileData("cipher.asc"); // Filepath of the Encrypted Payload
-            plain = new GpgmeFileData("decryptedPlain.txt"); // Filepath of the decrypted payload. There is option to create a memory based buffer for GPGME instead. That is useful if the data is loaded from object-stores or databases instead of the OS filesystem. Refer to the sample codes in the DataSampleTest project.
+            plain = new GpgmeFileData(recipientDecryptedFilePath); // Filepath of the decrypted payload. There is option to create a memory based buffer for GPGME instead. That is useful if the data is loaded from object-stores or databases instead of the OS filesystem. Refer to the sample codes in the DataSampleTest project.
 
             CombinedResult comrst = ctx.DecryptAndVerify(
                 cipher, // source buffer
                 plain); // destination buffer
 
-            Console.WriteLine("Done. Filename: \"{0}\" Recipients:",
-                comrst.DecryptionResult.FileName);
+            plain.Close();
+            Console.WriteLine("Done. \n\nSource Filename: [{0}], Decrypted Filename: [{1}]\nRecipients:",
+                comrst.DecryptionResult.FileName, recipientDecryptedFilePath);
 
             /* print out all recipients key ids (a PGP package can be 
              * encrypted to various recipients).
@@ -195,27 +205,42 @@ namespace PgpCombinedCrypto
         private static string GetSenderSecretPassphrase()
         {
             var appSettings = ConfigurationManager.AppSettings;
-            bool IsUsingAWSSecretsManager = Convert.ToBoolean(appSettings["IsUsingAWSSecretsManager"]);
+            string passphraseProtectionMode = appSettings["PassphraseProtectionMode"].Trim().ToUpper();
             string senderSecretPassphrase;
 
-            if (IsUsingAWSSecretsManager)
+            Console.WriteLine("Fetching Alice's Secret Passphrase programmatically...\n\t");
+
+            switch (passphraseProtectionMode)
             {
-                // Systems that are hosted in AWS are strongly encouraged to use AWS Secrets Manager to secured their OpenPGP Secret Passphrase
-                IGetSecrets sm = new GetSecretsFromAWSSecretsManager();
-                string senderSecretPassphraseID = "prod/AliceSecretPassPhrase"; //Set the Secret Name configured in AWS Secrets Manager
-                var retrievedSecrets = JsonSerializer.Deserialize<Dictionary<string, string>>(sm.GetSecretString(senderSecretPassphraseID));
-                senderSecretPassphrase = retrievedSecrets["SecretPassPhrase"];
-                Console.WriteLine("Fetched Secret Passphrase from AWS Secrets Manager...");
-            }
-            else
-            {
-                // Systems that are hosted outside of AWS need to manage the OpenPGP Secrets separately.
-                // Systems running on Windows OS may consider using the Windows Data Protection API (DPAPI) to encrypt their OpenPGP Secret Passphrase before saving it into the AppSettings parameter
-                // THIS SOLUTION IS BASED ON WINDOWS DATA PROTECTION API AND THUS ONLY WORKS FOR SYSTEMS RUNNING ON MS WINDOWS 
-                IGetSecrets sm = new DecryptSecretsFromAppConfigWithWindowsDataProtectionAPI();
-                string senderSecretPassphraseID = "AliceEncryptedSecretPassPhrase";
-                senderSecretPassphrase = sm.GetSecretString(senderSecretPassphraseID);
-                Console.WriteLine("Decrypted Secret Passphrase using Windows Data Protection API...");
+                case "AWS_SECRETSMANAGER":
+                    {
+                        // Recommended for AWS serverless and containerized based solutions. Also useful for Applications hosted on AWS EC2 Instances.
+                        IGetSecrets sm = new GetSecretsFromAWSSecretsManager();
+                        string senderSecretPassphraseID = "prod/AliceSecretPassPhrase"; //Set the Secret Name configured in AWS Secrets Manager
+                        var retrievedSecrets = JsonSerializer.Deserialize<Dictionary<string, string>>(sm.GetSecretString(senderSecretPassphraseID));
+                        senderSecretPassphrase = retrievedSecrets["SecretPassPhrase"];
+                        Console.WriteLine("Fetched Secret Passphrase from AWS Secrets Manager...");
+                    }
+                    break;
+                case "WINDOWS_DPAPI":
+                    {
+                        // Only works for Systems developed for Windows OS. Optimized for Windows-Based Applications! 
+                        IGetSecrets sm = new DecryptSecretsFromAppConfigWithWindowsDataProtectionAPI();
+                        string senderSecretPassphraseID = "AliceEncryptedSecretPassPhrase_WIND_DPAPI";
+                        senderSecretPassphrase = sm.GetSecretString(senderSecretPassphraseID);
+                        Console.WriteLine("Decrypted Secret Passphrase using Windows Data Protection API...");
+                    }
+                    break;
+                case "ASPNET_DPAPI":
+                default:
+                    {
+                        // Works for Windows, Linux and macOS based Applications. Can be used on any .NET core applications, including non-ASP.NET ones. Recommended for all other types of Applications that cannot use Solutions 1 & 2. 
+                        IGetSecrets sm = new DecryptSecretsFromAppConfigWithASPNETCoreDPAPI();
+                        string senderSecretPassphraseID = "AliceEncryptedSecretPassPhrase_ASP_DPAPI";
+                        senderSecretPassphrase = sm.GetSecretString(senderSecretPassphraseID);
+                        Console.WriteLine("Decrypted Secret Passphrase using ASP.NET Core Data Protection API...");
+                    }
+                    break;
             }
 
             return senderSecretPassphrase;
@@ -228,29 +253,42 @@ namespace PgpCombinedCrypto
         private static string GetRecipientSecretPassphrase()
         {
             var appSettings = ConfigurationManager.AppSettings;
-            bool IsUsingAWSSecretsManager = Convert.ToBoolean(appSettings["IsUsingAWSSecretsManager"]);
+            string passphraseProtectionMode = appSettings["PassphraseProtectionMode"].Trim().ToUpper();
             string recipientSecretPassphrase;
+            Console.WriteLine("Fetching Bob's Secret Passphrase programmatically...");
+            switch (passphraseProtectionMode)
+            {
+                case "AWS_SECRETSMANAGER":
+                    {
+                        // Recommended for AWS serverless and containerized based solutions. Also useful for Applications hosted on AWS EC2 Instances.
+                        IGetSecrets sm = new GetSecretsFromAWSSecretsManager();
+                        string recipientSecretPassphraseID = "prod/BobSecretPassPhrase"; //Set the Secret Name configured in AWS Secrets Manager
+                        var retrievedSecrets = JsonSerializer.Deserialize<Dictionary<string, string>>(sm.GetSecretString(recipientSecretPassphraseID));
+                        recipientSecretPassphrase = retrievedSecrets["SecretPassPhrase"];
+                        Console.WriteLine("Fetched Secret Passphrase from AWS Secrets Manager...");
+                    }
+                    break;
+                case "WINDOWS_DPAPI":
+                    {
+                        // Only works for Systems developed for Windows OS. Optimized for Windows-Based Applications! 
+                        IGetSecrets sm = new DecryptSecretsFromAppConfigWithWindowsDataProtectionAPI();
+                        string recipientSecretPassphraseID = "BobEncryptedSecretPassPhrase_WIND_DPAPI";
+                        recipientSecretPassphrase = sm.GetSecretString(recipientSecretPassphraseID);
+                        Console.WriteLine("Decrypted Secret Passphrase using Windows Data Protection API...");
+                    }
+                    break;
+                case "ASPNET_DPAPI":
+                default:
+                    {
+                        // Works for Windows, Linux and macOS based Applications. Can be used on any .NET core applications, including non-ASP.NET ones. Recommended for all other types of Applications that cannot use Solutions 1 & 2. 
+                        IGetSecrets sm = new DecryptSecretsFromAppConfigWithASPNETCoreDPAPI();
+                        string recipientSecretPassphraseID = "BobEncryptedSecretPassPhrase_ASP_DPAPI";
+                        recipientSecretPassphrase = sm.GetSecretString(recipientSecretPassphraseID);
+                        Console.WriteLine("Decrypted Secret Passphrase using ASP.NET Core Data Protection API...");
+                    }
+                    break;
+            }
 
-            if (IsUsingAWSSecretsManager)
-            {
-                // Systems that are hosted in AWS are strongly encouraged to use AWS Secrets Manager to secured their OpenPGP Secret Passphrase
-                // Test retrieving Secrets from AWS SecretsManager
-                IGetSecrets sm = new GetSecretsFromAWSSecretsManager();
-                string recipientSecretPassphraseID = "prod/BobSecretPassPhrase";
-                var retrievedSecrets = JsonSerializer.Deserialize<Dictionary<string, string>>(sm.GetSecretString(recipientSecretPassphraseID));
-                recipientSecretPassphrase = retrievedSecrets["SecretPassPhrase"];
-                Console.WriteLine("Fetched Secret Passphrase from AWS Secrets Manager...");
-            }
-            else
-            {
-                // Systems that are hosted outside of AWS need to manage the OpenPGP Secrets separately.
-                // Systems running on Windows OS may consider using the Windows Data Protection API (DPAPI) to encrypt their OpenPGP Secret Passphrase before saving it into the AppSettings parameter
-                // THIS SOLUTION IS BASED ON WINDOWS DATA PROTECTION API AND THUS ONLY WORKS FOR SYSTEMS RUNNING ON MS WINDOWS 
-                IGetSecrets sm = new DecryptSecretsFromAppConfigWithWindowsDataProtectionAPI();
-                string recipientSecretPassphraseID = "BobEncryptedSecretPassPhrase";
-                recipientSecretPassphrase = sm.GetSecretString(recipientSecretPassphraseID);
-                Console.WriteLine("Decrypted Secret Passphrase using Windows Data Protection API...");
-            }
             return recipientSecretPassphrase;
         }
         /// <summary>
@@ -265,8 +303,6 @@ namespace PgpCombinedCrypto
            PassphraseInfo info,
            ref char[] passwd)
         {
-            Console.WriteLine("Supplying Sender's Secret Passphrase programmatically...");
-
             string senderSecretPassphrase = GetSenderSecretPassphrase();
 
             passwd = senderSecretPassphrase.ToCharArray();
@@ -286,8 +322,6 @@ namespace PgpCombinedCrypto
                PassphraseInfo info,
                ref char[] passwd)
         {
-            Console.WriteLine("Supplying Recipient's Secret Passphrase programmatically...");
-
             string recipientSecretPassphrase = GetRecipientSecretPassphrase();
             passwd = recipientSecretPassphrase.ToCharArray();
             Console.WriteLine("OK!");

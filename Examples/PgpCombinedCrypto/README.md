@@ -8,11 +8,13 @@ Preparations (Follow the steps in Sequence)
 3. Generate and import 2 sets of OpenPGP Keypairs with same cipher specifications - for the sender (alice) and the recipient (bob) in this sample code. Enable secret passphrase for each of them. 
 
 4. Decide on the method for protecting the confidentiality of the secret passphrase. 
-   This solution offers 2 options: 
- 
-     a. Use AWS Secrets Manager 
-     
-     b. Use Windows Data Protection API (Only works for Windows OS. Refer to https://simplecodesoftware.com/articles/how-to-encrypt-data-on-macos-without-dpapi for a workaround that provides a similar solution for Linux/macOS systems)
+   This repository provides source code for 3 ready-to-use solutions that protects the confidentiality of the secret passphrases of the OpenPGP private keys.
+
+     a.	Uses AWS Secrets Manager [Recommended for AWS serverless and containerized based solutions. Also useful for Applications hosted on AWS EC2 Instances.]
+
+     b.	Uses Windows Data Protection API [Only works for Systems developed for Windows OS. Optimized for Windows-Based Applications!]
+
+     c.	Uses ASP.NET Core Data Protection API [Works for Windows, Linux and macOS based Applications. Can be used on any .NET core applications, including non-ASP.NET ones. Recommended for all other types of Applications that cannot use Solutions 1 & 2.]
    
    Refer to the respective steps in SETUP.docx to enable each of the option above. 
 

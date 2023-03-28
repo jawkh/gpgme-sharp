@@ -53,4 +53,4 @@ The provided source code provides 3 ready-to-use solutions that provides protect
 
 3. [ProtectSecretsWithASPNETCoreDataProtectionAPI](ProtectSecretsWithASPNETCoreDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using ASP.NET Core Data Protection API. This code can be used on Windows, Linux and macOS Systems.
 
-4. [DataBufferTest](Examples/DataBufferSamples) provides sample code on howto use gpgme-sharp's data buffers to handle the encrypted/decrypted data payloads without saving them  onto the OS filesystems. This is suitable for reading/writing the data from/to databases or object stores. This code can be used on Windows, Linux and macOS Systems.
+4. [DataBufferTest](Examples/DataBufferSamples/DataBufferTest) provides sample code on howto use gpgme-sharp's data buffers to handle the encrypted/decrypted data payloads without saving them  onto the OS filesystems. This is suitable for reading/writing the data from/to databases or object stores. This code can be used on Windows, Linux and macOS Systems.

@@ -23,4 +23,4 @@ Preparations (Follow the steps in Sequence to setup your development environment
    
    Refer to the respective steps in SETUP.docx to enable each of the option above. 
 
-5. You may run the sample code in Debug Mode / Without Debug Mode (F5 / Ctrl + F5) after you completed the required steps in SETUP.docx. 
+5. You may run the sample code in Debug Mode / Without Debug Mode (F5 / Ctrl + F5) after you completed the required steps in [SETUP.docx](SETUP.docx). 

@@ -49,8 +49,8 @@ The provided source code provides 3 ready-to-use solutions that provides protect
     
     - Solution 3: Uses ASP.NET Core Data Protection API [Works for Windows, Linux and macOS based Applications. Can be used on any .NET core applications, including non-ASP.NET ones. Recommended for all other types of Applications that cannot use Solutions 1 & 2.
 
-2. [ProtectSecretsWithWindowsDataProtectionAPI](ProtectSecretsWithWindowsDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using Windows Data Protection API. This code can only be run on Windows Systems.
+2. [ProtectSecretsWithWindowsDataProtectionAPI](ProtectSecretsWithWindowsDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using Windows Data Protection API. This code can only be run on Windows Systems. **TIP:** This will be useful for protecting sensitive application configuration settings that are stored directly on a Windows Server when a Secrets Manager solution is not in use.
 
-3. [ProtectSecretsWithASPNETCoreDataProtectionAPI](ProtectSecretsWithASPNETCoreDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using ASP.NET Core Data Protection API. This code can be used on Windows, Linux and macOS Systems.
+3. [ProtectSecretsWithASPNETCoreDataProtectionAPI](ProtectSecretsWithASPNETCoreDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using ASP.NET Core Data Protection API. This code can be used on Windows, Linux and macOS Systems. **TIP:** This will be useful for protecting sensitive application configuration settings that are stored directly on a Windows/Linux/macOS Server when a Secrets Manager solution is not in use.
 
 4. [DataBufferTest](Examples/DataBufferSamples/DataBufferTest) provides sample code on howto use gpgme-sharp's data buffers to handle the encrypted/decrypted data payloads without saving them  onto the OS filesystems. This is suitable for reading/writing the data from/to databases or object stores. This code can be used on Windows, Linux and macOS Systems.

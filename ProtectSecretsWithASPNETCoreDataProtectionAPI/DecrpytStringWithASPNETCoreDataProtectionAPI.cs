@@ -25,9 +25,20 @@ namespace ProtectSecretsWithASPNETCoreDataProtectionAPI
         public static SecureString DecryptString(string secret)
         {
             string sEntropy = ConfigurationManager.AppSettings["entropy"];
+            string sslCertDistinguishedSubjectName = ConfigurationManager.AppSettings["SSLCertDistinguishedSubjectName"];
+            return DecryptString(secret, sEntropy, sslCertDistinguishedSubjectName);
+        }
+        /// <summary>
+        /// Decrypt String using ASP.NET Core Data Protection API
+        /// </summary>
+        /// <param name="secret"></param>
+        /// <returns></returns>
+        public static SecureString DecryptString(string secret, string entropy, string sslCertDistinguishedSubjectName)
+        {
+            
             var serviceCollection2 = new ServiceCollection();
-            SetupEnvironment.ConfigureServices(serviceCollection2);
-            IDataProtector dataProtector2 = serviceCollection2.BuildServiceProvider().GetDataProtector(purpose: sEntropy);
+            SetupEnvironment.ConfigureServices(serviceCollection2, sslCertDistinguishedSubjectName);
+            IDataProtector dataProtector2 = serviceCollection2.BuildServiceProvider().GetDataProtector(purpose: entropy);
 
             byte[] unprotectedSecretBytes = dataProtector2.Unprotect(Convert.FromBase64String(secret));
             return Util.ToSecureString(System.Text.Encoding.Unicode.GetString(unprotectedSecretBytes, 0, unprotectedSecretBytes.Length));

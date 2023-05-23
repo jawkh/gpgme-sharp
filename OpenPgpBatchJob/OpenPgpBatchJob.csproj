@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <StartupObject>OpenPgpBatchJob.Program</StartupObject>
+    <Authors>Jonathan AW (jonathan_aw@moh.gov.sg</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="~%24SETUP.docx" />
+    <None Remove="~WRL2497.tmp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.SecretsManager.Caching" Version="1.0.5" />
+    <PackageReference Include="gpgme-sharp" Version="2.0.3" />
+    <PackageReference Include="Serilog.Settings.AppSettings" Version="2.2.2" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProtectSecretsWithASPNETCoreDataProtectionAPI\ProtectSecretsWithASPNETCoreDataProtectionAPI.csproj" />
+    <ProjectReference Include="..\ProtectSecretsWithWindowsDataProtectionAPI\ProtectSecretsWithWindowsDataProtectionAPI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="asRecipientForSystemA.app.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="asSenderForSystemA.app.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SETUP.docx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

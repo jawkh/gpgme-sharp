@@ -24,8 +24,9 @@ namespace ProtectSecretsWithASPNETCoreDataProtectionAPI
         public static string EncryptString(SecureString input)
         {
             string sEntropy = ConfigurationManager.AppSettings["entropy"];
+            string SSLCertDistinguishedSubjectName = ConfigurationManager.AppSettings["SSLCertDistinguishedSubjectName"];
             var serviceCollection = new ServiceCollection();
-            SetupEnvironment.ConfigureServices(serviceCollection);
+            SetupEnvironment.ConfigureServices(serviceCollection, SSLCertDistinguishedSubjectName);
             IDataProtector dataProtector = serviceCollection.BuildServiceProvider().GetDataProtector(purpose: sEntropy);
 
             byte[] rawSecretBytesToProtect = Encoding.Unicode.GetBytes(Util.ToInsecureString(input));

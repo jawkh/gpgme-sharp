@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "runAsRecipientForSysA": {
+      "commandName": "Project",
+      "commandLineArgs": "Config_RunAsRecipient_for_SystemA\r\n"
+    },
+    "runAsSenderForSysA": {
+      "commandName": "Project",
+      "commandLineArgs": "Config_RunAsSender_for_SystemA"
+    }
+  }
+}

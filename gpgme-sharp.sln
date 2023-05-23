@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgpCombinedCrypto", "Exampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtectSecretsWithWindowsDataProtectionAPI", "ProtectSecretsWithWindowsDataProtectionAPI\ProtectSecretsWithWindowsDataProtectionAPI.csproj", "{BDA9B1DC-C030-4354-BD3D-27C35BED394D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtectSecretsWithASPNETCoreDataProtectionAPI", "ProtectSecretsWithASPNETCoreDataProtectionAPI\ProtectSecretsWithASPNETCoreDataProtectionAPI.csproj", "{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtectSecretsWithASPNETCoreDataProtectionAPI", "ProtectSecretsWithASPNETCoreDataProtectionAPI\ProtectSecretsWithASPNETCoreDataProtectionAPI.csproj", "{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenPgpBatchJob", "OpenPgpBatchJob\OpenPgpBatchJob.csproj", "{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,14 @@ Global
 		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Release|x86.ActiveCfg = Release|Any CPU
 		{B9F31D19-C632-4EAB-8F53-F33C3BB82D24}.Release|x86.Build.0 = Release|Any CPU
+		{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}.Debug|x86.Build.0 = Debug|Any CPU
+		{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}.Release|x86.ActiveCfg = Release|Any CPU
+		{D821FBEB-9A12-479D-9189-2F3BDCBF83EF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,6 +8,8 @@ using System.Security;
 
 namespace ProtectSecretsWithWindowsDataProtectionAPI
 {
+    
+
     /// <summary>
     /// This helper class uses Windows Data Protection API (DPAPI) to Decrypt the Secrets 
     /// Credits: https://simplecodesoftware.com/articles/how-to-encrypt-data-on-macos-without-dpapi 
@@ -22,6 +24,17 @@ namespace ProtectSecretsWithWindowsDataProtectionAPI
         public static SecureString DecryptString(string secret)
         {
             string sEntropy = ConfigurationManager.AppSettings["entropy"];
+            return DecryptString(secret, sEntropy);
+        }
+
+        /// <summary>
+        /// Decrypt String using Windows Data Protection API (DPAPI)
+        /// </summary>
+        /// <param name="secret"></param>
+        /// <returns></returns>
+        public static SecureString DecryptString(string secret, string sEntropy)
+        {
+            
             byte[] entropy = System.Text.Encoding.Unicode.GetBytes(sEntropy);
 
             try

@@ -26,5 +26,3 @@ Preparations (Follow the steps in Sequence to setup your development environment
 5. You may run the sample code in Debug Mode / Without Debug Mode (F5 / Ctrl + F5) after you completed the required steps in [SETUP.docx](SETUP.docx). 
 
 
-Running on Windows Cmd:
-OpenPgpBatchJob.exe Config_RunAsRecipient_for_SystemA > output_%date:~-4,4%%date:~-10,2%%date:~-7,2%_%time:~0,2%%time:~3,2%%time:~6,2%.log

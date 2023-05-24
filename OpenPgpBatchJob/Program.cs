@@ -70,9 +70,7 @@ namespace OpenPgpBatchJob
             string sourceFolderPath = openPgpHelper.RuntimeAppSettings["SourceFolderPath"];
             string destFolderPath = openPgpHelper.RuntimeAppSettings["DestinationFolderPath"];
             string archiveFolderPath = openPgpHelper.RuntimeAppSettings["ArchiveFolderPath"];
-            string destFilePrefix = openPgpHelper.RuntimeAppSettings["DestinationFilePrefix"];
-            string archiveFilePrefix = openPgpHelper.RuntimeAppSettings["ArchiveFilePrefix"];
-            string modeOfOperation = openPgpHelper.RuntimeAppSettings["ModeOfOperation"];
+
 
             sb.Clear();
             sb.Append("Searching for Sender's and Recipient's PGP keys in the default keyring on this machine...");
@@ -107,6 +105,7 @@ namespace OpenPgpBatchJob
             try
             {
                 int count = 0;
+                string modeOfOperation = openPgpHelper.RuntimeAppSettings["ModeOfOperation"];
 
                 if (modeOfOperation.Trim().ToUpper() == "SENDER")
                 {
@@ -114,17 +113,6 @@ namespace OpenPgpBatchJob
                     sb.Append(">>>>> Job is running in SENDER MODE.\n");
                     sb.Append(string.Format("Source Folder: [{0}]\nDestination Folder: [{1}]\nArchive Folder: [{2}]", sourceFolderPath, destFolderPath, archiveFolderPath ?? "Unspecified"));
                     Log.Information(sb.ToString());
-
-                    foreach (var (srcFilePath, destinationFilePath, archiveFilePath) in from string srcFilePath in Directory.GetFiles(sourceFolderPath)
-                                                                                        let srcFileName = Path.GetFileName(srcFilePath)
-                                                                                        where srcFileName != null// ie. Not a SubFolder Name, but a FileName
-                                                                                        let destinationFilePath = Path.Combine(destFolderPath, string.Format("{0}{1}", destFilePrefix ?? "", srcFileName))
-                                                                                        let archiveFilePath = archiveFolderPath != null ? Path.Combine(archiveFolderPath, string.Format("{0}{1}", archiveFilePrefix ?? "", srcFileName)) : null
-                                                                                        select (srcFilePath, destinationFilePath, archiveFilePath))
-                    {
-                        Log.Information(string.Format(">>>>> {0}. Encrypting & Signing [{1}]...", ++count, srcFilePath));
-                        openPgpHelper.EncryptAndSignFile(srcFilePath, destinationFilePath, archiveFilePath);
-                    }
                 }
                 else // recipient Mode
                 {
@@ -132,18 +120,11 @@ namespace OpenPgpBatchJob
                     sb.Append(">>>>> Job is running in RECIPIENT MODE.\n");
                     sb.Append(string.Format("Source Folder: [{0}]\nDestination Folder: [{1}]\nArchive Folder: [{2}]", sourceFolderPath, destFolderPath, archiveFolderPath ?? "Unspecified"));
                     Log.Information(sb.ToString());
-
-                    foreach (var (srcFilePath, destinationFilePath, archiveFilePath) in from string srcFilePath in Directory.GetFiles(sourceFolderPath)
-                                                                                        let srcFileName = Path.GetFileName(srcFilePath)
-                                                                                        where srcFileName != null// ie. Not a SubFolder Name, but a FileName
-                                                                                        let destinationFilePath = Path.Combine(destFolderPath, string.Format("{0}{1}", destFilePrefix ?? "", srcFileName))
-                                                                                        let archiveFilePath = archiveFolderPath != null ? Path.Combine(archiveFolderPath, string.Format("{0}{1}", archiveFilePrefix ?? "", srcFileName)) : null
-                                                                                        select (srcFilePath, destinationFilePath, archiveFilePath))
-                    {
-                        Log.Information(string.Format(">>>>> {0}. Decrypting & Verifying [{1}]...", ++count, srcFilePath));
-                        openPgpHelper.DecryptFileAndVerifySignature(srcFilePath, destinationFilePath, archiveFilePath);
-                    }
                 }
+
+                ProcessFilesInFolderAndSubFolders(openPgpHelper, sourceFolderPath, destFolderPath, archiveFolderPath, ref count);
+
+                Log.Information(string.Format("COMPLETED! [{0}] files successfully processed!", count));
             }
             catch (Exception ex)
             {
@@ -157,6 +138,59 @@ namespace OpenPgpBatchJob
             //#endif
 
         }
+
+        private static void ProcessFilesInFolderAndSubFolders(OpenPgpHelper openPgpHelper, string sourceFolderPath, string destFolderPath, string archiveFolderPath, ref int count)
+        {
+            try
+            {
+                string destFilePrefix = openPgpHelper.RuntimeAppSettings["DestinationFilePrefix"];
+                string archiveFilePrefix = openPgpHelper.RuntimeAppSettings["ArchiveFilePrefix"];
+                string modeOfOperation = openPgpHelper.RuntimeAppSettings["ModeOfOperation"];
+
+                foreach (var (srcFilePath, destinationFilePath, archiveFilePath) in from string srcFilePath in Directory.GetFiles(sourceFolderPath)
+                                                                                    let srcFileName = Path.GetFileName(srcFilePath)
+                                                                                    where srcFileName != null// ie. Not a SubFolder Name, but a FileName
+                                                                                    let destinationFilePath = Path.Combine(destFolderPath, string.Format("{0}{1}", destFilePrefix ?? "", srcFileName))
+                                                                                    let archiveFilePath = archiveFolderPath != null ? Path.Combine(archiveFolderPath, string.Format("{0}{1}", archiveFilePrefix ?? "", srcFileName)) : null
+                                                                                    select (srcFilePath, destinationFilePath, archiveFilePath))
+                {
+                    if (modeOfOperation.Trim().ToUpper() == "SENDER")
+                    {
+                        Log.Information(string.Format(">>>>> {0}. Encrypting & Signing [{1}]...", ++count, srcFilePath));
+                        openPgpHelper.EncryptAndSignFile(srcFilePath, destinationFilePath, archiveFilePath);
+                    }
+                    else // recipient Mode
+                    {
+                        Log.Information(string.Format(">>>>> {0}. Decrypting & Verifying [{1}]...", ++count, srcFilePath));
+                        openPgpHelper.DecryptFileAndVerifySignature(srcFilePath, destinationFilePath, archiveFilePath);
+                    }
+                }
+
+                foreach (var (sourceSubFolderPath, destSubFolderPath, archiveSubFolderPath) in from string sourceSubFolderPath in Directory.GetDirectories(sourceFolderPath)
+                                                                                               let subFolderName = Path.GetFileName(sourceSubFolderPath)
+                                                                                               let destSubFolderPath = Path.Combine(destFolderPath, subFolderName)
+                                                                                               let archiveSubFolderPath = archiveFolderPath != null ? Path.Combine(archiveFolderPath, subFolderName) : null
+                                                                                               select (sourceSubFolderPath, destSubFolderPath, archiveSubFolderPath))
+                {
+                    if (!Directory.Exists(destSubFolderPath))
+                    {
+                        Directory.CreateDirectory(destSubFolderPath);
+                    }
+
+                    if (archiveSubFolderPath != null && !Directory.Exists(archiveSubFolderPath))
+                    {
+                        Directory.CreateDirectory(archiveSubFolderPath);
+                    }
+
+                    ProcessFilesInFolderAndSubFolders(openPgpHelper, sourceSubFolderPath, destSubFolderPath, archiveSubFolderPath, ref count);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
 
 
     }

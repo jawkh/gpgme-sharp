@@ -20,3 +20,6 @@ The encrypted passphrase can only be decrypted on the same server where it was o
 If there is a need to rotate the SSL Cert that was used to protect the Master key of ASP.NET Core Data Protection API on your Server, simply delete away the existing one from the Current User’s Personal Cert Store and rerun the ProtectSecretsWithASPNETCoreDataProtectionAPI Console Program to encrypt your secrets again. The console program will auto-regenerate and re-import a replacement SSL Cert as it performs your encryption operation. 
 
 Once you delete away the old SSL Cert, you will not be able to decrypt the previously encrypted Secret PassPhrases anymore. Thereafter, please configure the newly encrypted secrets for your own Application that is running on that server. 
+
+
+© 2023 jonathan_aw@moh.gov.sg

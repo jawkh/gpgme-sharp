@@ -34,9 +34,23 @@ See the [Examples](Examples/) directory in this repo for usage examples.
 
 Catalog of VS.Net Projects in this Implementation Guide Repo.
 ======================================================
-1. [PgpCombinedCrypto](Examples/PgpCombinedCrypto) provides the sample code as part of the developer's guide for MOH and MOH's partners to implement GnuPG. 
+1. [OpenPgpBatchJob](OpenPgpBatchJob) implements a fully functional Production-Ready OpenPGP Batch Job (using gnupgme-sharp). This project is written in C# and targets Microsoft .NET Framework 6.0 (LTS). 
 
-    a. Ready-to-Use Source Code for most applications
+    a. Provides a ready to use option to start implementing OpenPGP in a way that complies with the Secured Coding Rules stated in MOH's OpenPGP Implementation guide without any development efforts.
+
+    b. Thanks to .NET 6.0, this Batch Job can be built to run on Windows, Linux and macOS Operating Systems.
+
+    c. This Batch Job supports multiple runtime configurations (eg. Config_RunAsSender_for_SystemA, Config_RunAsRecipient_for_SystemA, etc.). This allows a single instance of the BatchJob to support multiple OpenPGP use cases - eg. as a 'SenderRole with Partner-System-A' or as a 'RecipientRole with Partner-System-A', etc. Each Execution of the Batch Job will be based on 1 chosen Runtime Configuration, specified in an input argument to run the job.
+
+    d. This Batch Job is able to process all the files in the source folder, inclusive of the files in all the sub-folders therein. 
+
+    e. This Batch Job is able to perform auto-archival of source files, if an archive folder path is specified in the Runtime Configuration.
+
+    f. Logging to Console and to LogFiles.
+
+2. [PgpCombinedCrypto](Examples/PgpCombinedCrypto) provides the sample code as part of the developer's guide for MOH and MOH's partners to implement GnuPG. 
+
+    a. Ready-to-Use Source Code for most applications [For building OpenPGP capabilities into Web API, Serverless-based solutions, etc.]
   
     - Thanks to .NET 6.0 framework, the provided source code will be suitable to implement the recommended way to use GnuPG within an application built for Windows, Linux and macOS Operating Systems. It can also be adopted to build AWS Lambda Functions and Azure Functions.
 
@@ -49,8 +63,8 @@ The provided source code provides 3 ready-to-use solutions that provides protect
     
     - Solution 3: Uses ASP.NET Core Data Protection API [Works for Windows, Linux and macOS based Applications. Can be used on any .NET core applications, including non-ASP.NET ones. Recommended for all other types of Applications that cannot use Solutions 1 & 2.
 
-2. [ProtectSecretsWithWindowsDataProtectionAPI](ProtectSecretsWithWindowsDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using Windows Data Protection API. This code can only be run on Windows Systems. **TIP:** This will be useful for protecting sensitive application configuration settings that are stored directly on a Windows Server when a Secrets Manager solution is not in use.
+3. [ProtectSecretsWithWindowsDataProtectionAPI](ProtectSecretsWithWindowsDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using Windows Data Protection API. This code can only be run on Windows Systems. **TIP:** This will be useful for protecting sensitive application configuration settings that are stored directly on a Windows Server when a Secrets Manager solution is not in use.
 
-3. [ProtectSecretsWithASPNETCoreDataProtectionAPI](ProtectSecretsWithASPNETCoreDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using ASP.NET Core Data Protection API. This code can be used on Windows, Linux and macOS Systems. **TIP:** This will be useful for protecting sensitive application configuration settings that are stored directly on a Windows/Linux/macOS Server when a Secrets Manager solution is not in use.
+4. [ProtectSecretsWithASPNETCoreDataProtectionAPI](ProtectSecretsWithASPNETCoreDataProtectionAPI) provides a console program and a reusable code library for encrypting secrets by using ASP.NET Core Data Protection API. This code can be used on Windows, Linux and macOS Systems. **TIP:** This will be useful for protecting sensitive application configuration settings that are stored directly on a Windows/Linux/macOS Server when a Secrets Manager solution is not in use.
 
-4. [DataBufferTest](Examples/DataBufferSamples/DataBufferTest) provides sample code on howto use gpgme-sharp's data buffers to handle the encrypted/decrypted data payloads without saving them  onto the OS filesystems. This is suitable for reading/writing the data from/to databases or object stores. This code can be used on Windows, Linux and macOS Systems.
+5. [DataBufferTest](Examples/DataBufferSamples/DataBufferTest) provides sample code on howto use gpgme-sharp's data buffers to handle the encrypted/decrypted data payloads without saving them  onto the OS filesystems. This is suitable for reading/writing the data from/to databases or object stores. This code can be used on Windows, Linux and macOS Systems.

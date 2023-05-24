@@ -5,7 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <PlatformTarget>x86</PlatformTarget>
     <StartupObject>OpenPgpBatchJob.Program</StartupObject>
-    <Authors>Jonathan AW (jonathan_aw@moh.gov.sg</Authors>
+    <Authors>Jonathan AW (jonathan_aw@moh.gov.sg)</Authors>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,9 +36,19 @@
     <None Update="asSenderForSystemA.app.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SETUP - Protect PgP SecretPassphrase.docx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="SETUP.docx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Publish\Windows\" />
   </ItemGroup>
 
 </Project>

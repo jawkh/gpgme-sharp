@@ -13,3 +13,6 @@ https://learn.microsoft.com/en-us/previous-versions/ms995355(v=msdn.10)?redirect
 Hence, it is imperative to run the ProtectSecretsWithWindowsDataProtectionAPI Console Program (to encrypt your secret) individually on each Windows server, using the same service-account that will be used to run your own Application (ie. which performs the decryptions). Also ensure that you set the same value for **entropy** AppSettings variable for the ProtectSecretsWithWindowsDataProtectionAPI console program and for your own Application.
 
 The encrypted passphrase can only be decrypted on the same Windows server where it was originally encrypted.
+
+
+© 2023 jonathan_aw@moh.gov.sg

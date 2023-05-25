@@ -40,13 +40,13 @@ Catalog of VS.Net Projects in this Implementation Guide Repo.
 
     b. Thanks to .NET 6.0, this Batch Job can be built to run on Windows, Linux and macOS Operating Systems.
 
-    c. This Batch Job supports multiple runtime configurations (eg. Config_RunAsSender_for_SystemA, Config_RunAsRecipient_for_SystemA, etc.). This allows a single instance of the BatchJob to support multiple OpenPGP use cases - eg. as a 'SenderRole with Partner-System-A' or as a 'RecipientRole with Partner-System-A', etc. Each Execution of the Batch Job will be based on 1 chosen Runtime Configuration, specified in an input argument to run the job.
+    c. This Batch Job supports multiple scenario configurations (eg. Config_RunAsSender_for_SystemA, Config_RunAsRecipient_for_SystemA, etc.). This allows a single instance of the BatchJob to support multiple OpenPGP use cases - eg. as a 'Sender Role with Partner-System-A' or as a 'Recipient Role with Partner-System-A', etc. Each Execution of the Batch Job will be based on 1 chosen scenario configuration, specified in an input argument to run the job.
 
     d. This Batch Job is able to process all the files in the source folder, inclusive of the files in all the sub-folders therein. 
 
     e. This Batch Job is able to perform auto-archival of source files, if an archive folder path is specified in the Runtime Configuration.
 
-    f. Logging to Console and to LogFiles.
+    f. Logging to Console and to Log Files.
 
 2. [PgpCombinedCrypto](Examples/PgpCombinedCrypto) provides the sample code as part of the developer's guide for MOH and MOH's partners to implement GnuPG. 
 

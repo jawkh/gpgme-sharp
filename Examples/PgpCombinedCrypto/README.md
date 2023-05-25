@@ -21,7 +21,7 @@ Preparations (Follow the steps in Sequence to setup your development environment
 
      c.	Uses ASP.NET Core Data Protection API [Works for Windows, Linux and macOS based Applications. Can be used on any .NET core applications, including non-ASP.NET ones. Recommended for all other types of Applications that cannot use Solutions 1 & 2.]
    
-   Refer to the respective steps in SETUP.docx to enable each of the option above. 
+   Refer to the respective steps in [SETUP.docx](SETUP.docx) to enable each of the option above. 
 
 5. You may run the sample code in Debug Mode / Without Debug Mode (F5 / Ctrl + F5) after you completed the required steps in [SETUP.docx](SETUP.docx). 
 

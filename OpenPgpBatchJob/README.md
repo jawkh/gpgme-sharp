@@ -15,7 +15,7 @@ Key Features
 
 5. This Batch Job can perform auto-archival of source files, if an archive folder path is specified in the Runtime Configuration.
 
-6. Logging to Console and to LogFiles.
+6. Logging to Console and to Log Files.
 
 
 Options to obtain the Batch job:

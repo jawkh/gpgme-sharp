@@ -5,8 +5,8 @@ Version: 1.0.0
 ==============
 First stable release of this batchjob. 
 
-Key Features
-============
+**Key Features**
+
 1. Ready-to-Use Production-Ready BatchJob that implements OpenPGP in accordance to MOH's OpenPGP Specifications. 
 
 2. Thanks to .NET 6.0, this Batch Job can be built to run on Windows, Linux and macOS Operating Systems.

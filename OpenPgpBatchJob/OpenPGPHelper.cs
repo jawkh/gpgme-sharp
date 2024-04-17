@@ -86,7 +86,7 @@ namespace OpenPgpBatchJob
             /////// ENCRYPT AND SIGN DATA ///////
             GpgmeData plain = new GpgmeFileData(sourceFilePath);
             GpgmeData cipher = new GpgmeFileData(destinationFilePath);
-
+                        
             // Create ASCII armored output. The default is to create the binary OpenPGP format.
             _ctx.Armor = true;
 
@@ -98,11 +98,14 @@ namespace OpenPgpBatchJob
             _ctx.Signers.Clear();
             _ctx.Signers.Add(_senderKey);
 
+            Log.Information(string.Format("Source File Size: {0} KBytes...", plain.Length/1024));
             EncryptionResult encrst = _ctx.EncryptAndSign(
                 new Key[] { _recipientKey },
                 EncryptFlags.AlwaysTrust,
                 plain,
                 cipher);
+
+            Log.Information(string.Format("Destination File Size: {0} KBytes...", cipher.Length/1024));
 
             plain.Close();
             cipher.Close();
@@ -153,10 +156,13 @@ namespace OpenPgpBatchJob
             _ctx.PinentryMode = PinentryMode.Loopback; // Use the Loopback option to supply the secretPassphrase programmatically
 
             //Console.Write(">>>>> Decrypting and verifying data...\n");
-
+            Log.Information(string.Format("Source File Size: {0} KBytes...", plain.Length / 1024));
+            
             CombinedResult comrst = _ctx.DecryptAndVerify(
                 cipher, // source buffer
                 plain); // destination buffer
+
+            Log.Information(string.Format("Destination File Size: {0} KBytes...", cipher.Length / 1024));
 
             plain.Close();
             cipher.Close();

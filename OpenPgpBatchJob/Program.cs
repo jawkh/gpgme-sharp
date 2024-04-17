@@ -154,15 +154,22 @@ namespace OpenPgpBatchJob
                                                                                     let archiveFilePath = archiveFolderPath != null ? Path.Combine(archiveFolderPath, string.Format("{0}{1}", archiveFilePrefix ?? "", srcFileName)) : null
                                                                                     select (srcFilePath, destinationFilePath, archiveFilePath))
                 {
-                    if (modeOfOperation.Trim().ToUpper() == "SENDER")
+                    try
                     {
-                        Log.Information(string.Format(">>>>> {0}. Encrypting & Signing [{1}]...", ++count, srcFilePath));
-                        openPgpHelper.EncryptAndSignFile(srcFilePath, destinationFilePath, archiveFilePath);
+                        if (modeOfOperation.Trim().ToUpper() == "SENDER")
+                        {
+                            Log.Information(string.Format(">>>>> {0}. Encrypting & Signing [{1}]...", ++count, srcFilePath));
+                            openPgpHelper.EncryptAndSignFile(srcFilePath, destinationFilePath, archiveFilePath);
+                        }
+                        else // recipient Mode
+                        {
+                            Log.Information(string.Format(">>>>> {0}. Decrypting & Verifying [{1}]...", ++count, srcFilePath));
+                            openPgpHelper.DecryptFileAndVerifySignature(srcFilePath, destinationFilePath, archiveFilePath);
+                        }
                     }
-                    else // recipient Mode
+                    catch (Exception ex)
                     {
-                        Log.Information(string.Format(">>>>> {0}. Decrypting & Verifying [{1}]...", ++count, srcFilePath));
-                        openPgpHelper.DecryptFileAndVerifySignature(srcFilePath, destinationFilePath, archiveFilePath);
+                        Console.WriteLine(ex.Message); // Do Not Abort Batch Job on failure to process a single file. 
                     }
                 }
 

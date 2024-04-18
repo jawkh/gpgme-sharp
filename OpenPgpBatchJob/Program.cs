@@ -109,6 +109,7 @@ namespace OpenPgpBatchJob
             try
             {
                 int count = 0;
+                int success = 0;
                 string modeOfOperation = openPgpHelper.RuntimeAppSettings["ModeOfOperation"];
 
                 if (modeOfOperation.Trim().ToUpper() == "SENDER")
@@ -126,9 +127,9 @@ namespace OpenPgpBatchJob
                     Log.Information(sb.ToString());
                 }
 
-                ProcessFilesInFolderAndSubFolders(openPgpHelper, sourceFolderPath, destFolderPath, archiveFolderPath, ref count);
+                ProcessFilesInFolderAndSubFolders(openPgpHelper, sourceFolderPath, destFolderPath, archiveFolderPath, ref count, ref success);
 
-                Log.Information(string.Format("COMPLETED! [{0}] files successfully processed!", count));
+                Log.Information(string.Format("COMPLETED! [{0}] out of [{1}] files successfully processed!", success, count));
             }
             catch (Exception ex)
             {
@@ -143,7 +144,7 @@ namespace OpenPgpBatchJob
 
         }
 
-        private static void ProcessFilesInFolderAndSubFolders(OpenPgpHelper openPgpHelper, string sourceFolderPath, string destFolderPath, string archiveFolderPath, ref int count)
+        private static void ProcessFilesInFolderAndSubFolders(OpenPgpHelper openPgpHelper, string sourceFolderPath, string destFolderPath, string archiveFolderPath, ref int count, ref int success)
         {
             try
             {
@@ -170,6 +171,7 @@ namespace OpenPgpBatchJob
                             Log.Information(string.Format(">>>>> {0}. Decrypting & Verifying [{1}]...", ++count, srcFilePath));
                             openPgpHelper.DecryptFileAndVerifySignature(srcFilePath, destinationFilePath, archiveFilePath);
                         }
+                        ++success; // increment success counter
                     }
                     catch (Exception ex)
                     {
@@ -193,7 +195,7 @@ namespace OpenPgpBatchJob
                         Directory.CreateDirectory(archiveSubFolderPath);
                     }
 
-                    ProcessFilesInFolderAndSubFolders(openPgpHelper, sourceSubFolderPath, destSubFolderPath, archiveSubFolderPath, ref count);
+                    ProcessFilesInFolderAndSubFolders(openPgpHelper, sourceSubFolderPath, destSubFolderPath, archiveSubFolderPath, ref count, ref success);
                 }
             }
             catch (System.Exception ex)

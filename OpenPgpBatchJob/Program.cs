@@ -78,7 +78,7 @@ namespace OpenPgpBatchJob
 
             if (openPgpHelper.RecipientKey == null || openPgpHelper.SenderKey == null)
             {
-                Log.Error("ERROR: Cannot find Sender's or Ricipient's PGP key in the your keyring! Exiting with Error Code: -1!");
+                Log.Error($"ERROR: Cannot find Sender's PGP Key ({Convert.ToString(openPgpHelper.RuntimeAppSettings["SenderEmailAddress"]).Trim()}) or Recipient's PGP key ({Convert.ToString(openPgpHelper.RuntimeAppSettings["RecipientEmailAddress"]).Trim()}) in the keyring! Exiting with Error Code: -1!");
                 System.Environment.Exit(-1);
             }
 

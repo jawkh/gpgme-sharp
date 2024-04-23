@@ -40,8 +40,8 @@ namespace OpenPgpBatchJob
                 _ctx.SetEngineInfo(Protocol.OpenPGP, null, null);
 
 
-            SenderEmail = Convert.ToString(_runtimeAppSettings["SenderEmailAddress"]);
-            RecipientEmail = Convert.ToString(_runtimeAppSettings["RecipientEmailAddress"]);
+            SenderEmail = Convert.ToString(_runtimeAppSettings["SenderEmailAddress"]).Trim();
+            RecipientEmail = Convert.ToString(_runtimeAppSettings["RecipientEmailAddress"]).Trim();
 
             String[] searchpattern = new String[2];
             searchpattern[0] = SenderEmail;
@@ -62,9 +62,9 @@ namespace OpenPgpBatchJob
                 {
                     if (k.Uid != null)
                     {
-                        if (RecipientKey == null && k.Uid.Email.ToLower().Equals(RecipientEmail))
+                        if (RecipientKey == null && k.Uid.Email.Equals(RecipientEmail))
                             RecipientKey = (PgpKey)k;
-                        if (SenderKey == null && k.Uid.Email.ToLower().Equals(SenderEmail))
+                        if (SenderKey == null && k.Uid.Email.Equals(SenderEmail))
                             SenderKey = (PgpKey)k;
                     }
                     else

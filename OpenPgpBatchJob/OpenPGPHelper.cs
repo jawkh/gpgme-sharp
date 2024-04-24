@@ -167,30 +167,30 @@ namespace OpenPgpBatchJob
             plain.Close();
             cipher.Close();
 
-            Log.Information(string.Format("Successfully Decrypted and Verified [{0}] and saved it to [{1}]!", sourceFilePath, destinationFilePath));
-
             /* print out all recipients key ids (a PGP package can be 
              * encrypted to various recipients).
              */
             DecryptionResult decrst = comrst.DecryptionResult;
 
+
             if (decrst.Recipients != null)
                 foreach (Recipient recp in decrst.Recipients)
                 {
-                    Log.Information(string.Format("Key id {0} with {1} algorithm",
+                    Log.Information(string.Format("File Decryption: Key id {0} with {1} algorithm",
                         recp.KeyId,
                         Gpgme.GetPubkeyAlgoName(recp.KeyAlgorithm)));
                 }
             else
                 Log.Warning("Recipients None!");
 
+            int countMatchingSenderThumbprint = 0;
             // print out signature information
             VerificationResult verrst = comrst.VerificationResult;
             if (verrst.Signature != null)
             {
                 foreach (Libgpgme.Signature sig in verrst.Signature)
                 {
-                    Log.Information(string.Format("Verification result (signature): "
+                    Log.Information(string.Format("Sender's Signatures Verifications: "
                         + "\n\tFingerprint: {0}"
                         + "\n\tHash algorithm: {1}"
                         + "\n\tKey algorithm: {2}"
@@ -203,6 +203,11 @@ namespace OpenPgpBatchJob
                         sig.Timestamp,
                         sig.Summary,
                         sig.Validity));
+
+                    if (VerifyKeyThumbprints(SenderKey, sig.Fingerprint, "Verifying whether the fingerprint of the actual Sender's key-in-use matches that of the configured Sender's key-for-use."))
+                    {
+                        countMatchingSenderThumbprint++;
+                    }
                 }
             }
 
@@ -218,6 +223,14 @@ namespace OpenPgpBatchJob
                     Log.Warning(string.Format("Unable to Archive Source File [{0}] to [{1}]: {2}. Skipping Archival...Please perform archiving manually.", sourceFilePath, archiveFilePath, ex.Message));
                 }
             }
+
+            if (countMatchingSenderThumbprint == 0) // Failed Sender Authentication!
+            {
+                File.Delete(destinationFilePath); // Delete the destination file due to failed sender authentication for security reason
+                throw new Exception($"Sender Authentication Failed! The fingerprint of the actual Sender's key-in-use does not match with the configured Sender's key-for-use! The decrypted file [{destinationFilePath}] has been deleted due to failed sender authentication for security reason.");
+            }
+
+            Log.Information(string.Format("Successfully Decrypted and Verified [{0}] and saved it to [{1}]!", sourceFilePath, destinationFilePath));
         }
 
         /// <summary>
@@ -365,6 +378,43 @@ namespace OpenPgpBatchJob
             passwd = recipientSecretPassphrase.ToCharArray();
             //Console.WriteLine("OK!");
             return PassphraseResult.Success;
+        }
+
+
+        /// <summary>
+        /// The Purpose of this function is to verify the thumbprint of the actual key-in-use matches that of the configured key-for-use.
+        /// </summary>
+        /// <param name="keyForUse"></param>
+        /// <param name="thumbprintOfKeyInUse"></param>
+        /// <param name="useCase"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public bool VerifyKeyThumbprints(Libgpgme.PgpKey keyForUse, string thumbprintOfKeyInUse, string useCase = "Verifying the thumbprint of the actual key-in-use matches that of the configured key-for-use.")
+        {
+            Log.Information(useCase);
+
+            if (keyForUse == null)
+            {
+                throw new Exception("Supplied Key-for-use is null!");
+            }
+
+            if (thumbprintOfKeyInUse == null)
+            {
+                throw new Exception("Supplied Thumbprint of Key-in-use is null!");
+            }
+
+
+            var subkeysThumbprints = new List<string>();
+
+            subkeysThumbprints.Add(keyForUse.Subkeys.Fingerprint);
+            if (keyForUse.Subkeys.Next != null) { subkeysThumbprints.Add(keyForUse.Subkeys.Next.Fingerprint); }
+
+            bool ismatching = subkeysThumbprints.Contains(thumbprintOfKeyInUse);
+
+            Log.Information($"Key-in-Use matches Key-for-Use?...[{ismatching}]");
+
+            return ismatching;
+
         }
     }
 }

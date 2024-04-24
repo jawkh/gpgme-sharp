@@ -176,6 +176,7 @@ namespace OpenPgpBatchJob
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message); // Do Not Abort Batch Job on failure to process a single file. 
+                        Log.Error(ex.Message);
                     }
                 }
 
@@ -201,6 +202,7 @@ namespace OpenPgpBatchJob
             catch (System.Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
         }
 
@@ -226,7 +228,7 @@ namespace OpenPgpBatchJob
             if (key.Subkeys.Next != null)
             {
                 sb.AppendLine("Subkey 2 Properties: ");
-                sb.AppendLine(PrintProperties(key.Subkeys, subKeyPropertiesToPrint).ToString());
+                sb.AppendLine(PrintProperties(key.Subkeys.Next, subKeyPropertiesToPrint).ToString());
             }
 
             return sb.ToString();

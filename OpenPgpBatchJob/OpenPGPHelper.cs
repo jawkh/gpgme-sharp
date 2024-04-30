@@ -72,6 +72,8 @@ namespace OpenPgpBatchJob
                 }
             }
 
+            Log.Information(PrintEngineInfoProperties(_ctx.EngineInfo));
+
         }
 
         /// <summary>
@@ -204,9 +206,18 @@ namespace OpenPgpBatchJob
                         sig.Summary,
                         sig.Validity));
 
-                    if (VerifyKeyThumbprints(SenderKey, sig.Fingerprint, "Verifying whether the fingerprint of the actual Sender's key-in-use matches that of the configured Sender's key-for-use."))
+                    if (sig.Summary.ToString().ToLower().Contains("valid") && sig.Validity.ToString().ToLower().Contains("full"))
                     {
-                        countMatchingSenderThumbprint++;
+                        // Sender's Signature is valid
+                        if (VerifyKeyThumbprints(SenderKey, sig.Fingerprint, "Verifying whether the fingerprint of the actual Sender's key-in-use matches that of the configured Sender's key-for-use."))
+                        {
+                            countMatchingSenderThumbprint++;
+                        }
+                    }
+                    else
+                    {
+                        // Sender's Signature is invalid
+                        Log.Error($"Sender's Signature with Fingerprint [{sig.Fingerprint}] is invalid!");
                     }
                 }
             }
@@ -227,7 +238,7 @@ namespace OpenPgpBatchJob
             if (countMatchingSenderThumbprint == 0) // Failed Sender Authentication!
             {
                 File.Delete(destinationFilePath); // Delete the destination file due to failed sender authentication for security reason
-                throw new Exception($"Sender Authentication Failed! The fingerprint of the actual Sender's key-in-use does not match with the configured Sender's key-for-use! The decrypted file [{destinationFilePath}] has been deleted due to failed sender authentication for security reason.");
+                throw new Exception($"Sender Authentication Failed! Either the Sender's Signature is invalid or the fingerprint of the actual Sender's key-in-use does not match with the configured Sender's key-for-use! The decrypted file [{destinationFilePath}] has been deleted due to failed sender authentication for security reason.");
             }
 
             Log.Information(string.Format("Successfully Decrypted and Verified [{0}] and saved it to [{1}]!", sourceFilePath, destinationFilePath));
@@ -415,6 +426,32 @@ namespace OpenPgpBatchJob
 
             return ismatching;
 
+        }
+
+        /// <summary>
+        /// Prints the properties of the GPG Engine Info that is installed on the server
+        /// </summary>
+        /// <param name="engineInfo"></param>
+        /// <returns></returns>
+        private string PrintEngineInfoProperties(Libgpgme.EngineInfo engineInfo)
+        {
+            // Printing the EngineInfo Properties
+            var engineInfoPropertiesToPrint = new List<string> { "FileName", "Protocol", "ReqVersion", "Version"};
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Engine Info Properties: ");
+            sb.AppendLine(ObjectPrinter.PrintProperties(engineInfo, engineInfoPropertiesToPrint).ToString());
+
+            var ei = engineInfo;
+            sb.Append("Engine Info Properties: ");
+
+            while (ei != null)
+            {
+                sb.AppendLine(ObjectPrinter.PrintProperties(ei, engineInfoPropertiesToPrint).ToString());
+
+                ei = ei.Next;
+            }
+            
+            return sb.ToString();
         }
     }
 }
